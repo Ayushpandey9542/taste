@@ -47,6 +47,28 @@ const { hentai } = require('./lib/scraper2.js')
 let { msgFilter } = require('./lib/antispam')
 const { mediafireDl } = require('./lib/mediafire.js')
 
+const time2 = moment().tz('Asia/Kolkata').format('HH:mm:ss')
+        if(time2 < "23:59:00"){
+        var ucapanWaktu = 'Good night 🌌'
+}
+        if(time2 < "19:00:00"){
+        var ucapanWaktu = 'Good afternoon 🌆'
+}
+        if(time2 < "18:00:00"){
+        var ucapanWaktu = 'Good afternoon 🌇'
+}
+        if(time2 < "15:00:00"){
+        var ucapanWaktu = 'Good afternoon 🏞'
+}
+        if(time2 < "11:00:00"){
+        var ucapanWaktu = 'Good morning 🌅'
+}
+        if(time2 < "05:00:00"){
+        var ucapanWaktu = 'Good night 🏙'
+}
+
+const xtime = moment.tz('Asia/Kolkata').format('HH:mm:ss')
+const xdate = moment.tz('Asia/Kolkata').format('DD/MM/YYYY')
 
 const _ = require('lodash')
 const yargs = require('yargs/yargs')
@@ -59,6 +81,11 @@ try {
 
 const { Low, JSONFile } = low
 const mongoDB = require('./lib/mongoDB')
+const { 
+  yta, 
+  ytv, 
+  searchResult 
+ } = require('./lib/ytdl')
 
 let banUser = JSON.parse(fs.readFileSync('./database/banUser.json'));
 let banchat = JSON.parse(fs.readFileSync('./database/banChat.json'));
@@ -117,6 +144,14 @@ let tebakkalimat = db.game.kalimat = []
 let tebaklirik = db.game.lirik = []
 let tebaktebakan = db.game.tebakan = []
 let vote = db.others.vote = []
+let handler  = async (m, { conn, args }) => {
+  dir = [
+ "https://express-uploader.garioxyt.repl.co/file/VBjZztgFPgsC.jpg",
+ "https://express-uploader.garioxyt.repl.co/file/fB3z7rolklO8.jpg"
+];
+  random = dir[Math.floor(Math.random() * dir.length)]
+  conn.sendFile(m.chat, `${random}`, 'error.jpg', '', m)
+}
 
 let pendaftar = JSON.parse(fs.readFileSync('./storage/user/user.json'))
 let balance = JSON.parse(fs.readFileSync('./database/balance.json'))
@@ -1353,7 +1388,7 @@ const ftroli = {
     
     Type *-menu* or press any button below to start using *${global.BotName}*
     
-    ©️ *${global.BotName}* All Rights Reserved by: *Fantox*
+    ©️ *${global.BotName}* All Rights Reserved by: *Ayush*
     `
         const qtod = m.quoted? "true":"false"
         
@@ -1510,14 +1545,42 @@ case 'support': case 'supportgc':
 
 case 'repo': case 'botrepo':
     
-    reply(`*My whatsapp group:* https://chat.whatsapp.com/DYp7FwfL9xsKURihcdT0l8`)
+    reply(`*chiku's bot script😘:* https://github.com/Ayush-pandey-u/Chiku-MD`)
     break
 
 case 'nsfwmenu':
     if (isBan) return reply(mess.banned)	 			
     if (isBanChat) return reply(mess.bangc)
     if (!AntiNsfw) return reply(mess.nonsfw)
-        reply(` *━━━〈  📛 NSFW Menu 📛  〉━━━*\n\nhentaivideo, blowjobgif, hneko, masturbation, thighs, pussy, panties, orgy, ahegao, ass, bdsm, blowjob, cuckold, ero, gasm, cum, femdom, foot, gangbang, glasses, jahy, trap, blowjobgif, spank, hneko, hwaifu, gasm`)
+        reply(` *━━━〈  📛 NSFW Menu 📛  〉━━━*
+🧖‍♀️hentaivideo
+🧖‍♀️blowjobgif
+🧖‍♀️hneko
+🧖‍♀️masturbation
+🧖‍♀️thighs
+🧖‍♀️pussy
+🧖‍♀️ panties
+🧖‍♀️orgy
+🧖‍♀️ahegao
+🧖‍♀️ass
+🧖‍♀️bdsm
+🧖‍♀️blowjob
+🧖‍♀️cuckold
+🧖‍♀️ero
+🧖‍♀️gasm
+🧖‍♀️cum
+🧖‍♀️femdom
+🧖‍♀️foot
+🧖‍♀️gangbang
+🧖‍♀️glasses
+🧖‍♀️jahy
+🧖‍♀️trap
+🧖‍♀️blowjobgif
+🧖‍♀️spank
+🧖‍♀️hneko
+🧖‍♀️hwaifu
+🧖‍♀️gasm`
+)
     break
 
 case 'reaction': case 'react': case 'reactions': case 'r':
@@ -2290,7 +2353,7 @@ replay("Error")
 break
 
 
-case 'listonline': case 'listaktif': case 'here':{
+case 'listonline': case 'listaktif': case 'here': case 'online':{
     if (isBan) return reply(mess.banned)	 			
  if (isBanChat) return reply(mess.bangc)
  if (!m.isGroup) return replay(mess.grouponly)
@@ -2621,28 +2684,6 @@ let mentioned = participants.map(v => v.jid)
      }
      Miku.sendMessage(m.chat, buttonMessage, { quoted: m })
      }
-     }
-     break
-
-     case 'promote': {
-        if (isBan) return reply(mess.banned)	 			
-     if (isBanChat) return reply(mess.bangc)
-     if (!m.isGroup) return replay(mess.grouponly)
-     if (!isBotAdmins) return replay(mess.botadmin)
-     if (!isAdmins && !isCreator) return replay(mess.useradmin)
-     let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-     await Miku.groupParticipantsUpdate(m.chat, [users], 'promote').then((res) => replay(jsonformat(res))).catch((err) => replay(jsonformat(err)))
-     }
-     break
-
-     case 'demote': {
-        if (isBan) return reply(mess.banned)	 			
-     if (isBanChat) return reply(mess.bangc)
-     if (!m.isGroup) return replay(mess.grouponly)
-     if (!isBotAdmins) return replay(mess.botadmin)
-     if (!isAdmins && !isCreator) return replay(mess.useradmin)
-     let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-     await Miku.groupParticipantsUpdate(m.chat, [users], 'demote').then((res) => replay(jsonformat(res))).catch((err) => replay(jsonformat(err)))
      }
      break
 
@@ -4564,6 +4605,12 @@ var walb = [
 break
 
 
+
+
+
+
+
+
 case 'anime':
     if (isBan) return reply(mess.banned)	 			
     if (isBanChat) return reply(mess.bangc)
@@ -4792,8 +4839,403 @@ replay('Broadcast Sent !')
 }
 break    
 
+case 'command': case 'listmenu' : case 'list': case 'l' : {
+	const sections = [{
+								"title": "Initial Features Of chiku Bot 🛰🚀",
+								"rows": [
+									{
+										"title": "Other ☕",
+										"description": "Displays The List Of Other Features",
+										"rowId": `${prefix}Othermenu`
+									}
+								]
+							},
+							{
+								"title": "Bot Features ❤️",
+								"rows": [
+									{
+										"title": "All Menu 🥀",
+										"description": "Displays The List Of All The Features!",
+										"rowId": `${prefix}allmenu`
+									},
+									{
+										"title": "Owner Menu 💠",
+										"description": "Displays The List Of Owner Features",
+										"rowId": `${prefix}ownermenu`
+										},
+									{
+										"title": "text to speak ✨",
+										"description": "use for convert text to voice .speak Ayush",
+										"rowId": `${prefix}texttospeech`
+										},
+										{
+										"title": "Group couple🌈",
+										"description": "find the Group couple here",
+										"rowId": `${prefix}couple`
+									},
+									{
+										"title": "⭕Group Menu⭕ ",
+										"description": "Displays The List Of Group Features",
+										"rowId": `${prefix}groupmenu`
+									},
+									{
+										"title": "Download Menu ↘️",
+										"description": "Displays The List Of Download Features",
+										"rowId": `${prefix}downloadmenu`
+									},
+									{
+										"title": "Sticker Menu 🃏",
+										"description": "Displays The List Of Sticker Features",
+										"rowId": `${prefix}stickermenu`
+									},
+									{
+										"title": "Search Menu 🔎",
+										"description": "Displays The List Of Searching Features",
+										"rowId": `${prefix}searchmenu`
+									},
+									{
+										"title": "core menu🌆",
+										"description": "Displays The List Of core Features",
+										"rowId": `${prefix}coremenu`
+									},
+									{
+										"title": "Image Effect Menu 🖼️",
+										"description": "Displays The List Of Image Effect Features",
+										"rowId": `${prefix}imageeffectmenu`
+									},
+										{
+											"title": "Anime Menu 😘",
+										"description": "Displays The List Of Random Anime Features",
+										"rowId": `${prefix}animemenu`
+										},
+										{
+											"title": "Emote Menu 😀",
+										"description": "Displays The List Of Emote Features",
+										"rowId": `${prefix}emotemenu`
+										},
+										{
+										"title": "Anime Sticker Menu ☺️",
+										"description": "Displays The List Of Anime Sticker Features",
+										"rowId": `${prefix}animestickermenu`
+									     },
+									{
+										"title": "Nsfw Menu 🤓",
+										"description": "Displays The List Of Nsfe Features",
+										"rowId": `${prefix}nsfwmenu`
+									     },
+										{
+											"title": "Fun Menu 🕺",
+										"description": "Displays The List Of Fun Features",
+										"rowId": `${prefix}funmenu`
+										},
+										{
+										"title": "Game Menu 🎮",
+										"description": "Displays The List Of Game Features",
+										"rowId": `${prefix}gamemenu`
+									},
+										{
+											"title": "Convert Menu ⚒️",
+										"description": "Displays The List Of Convert Features",
+										"rowId": `${prefix}convertmenu`
+										},
+										{
+											"title": "Search Menu ⚒️",
+										"description": "Displays The List Of Search Features",
+										"rowId": `${prefix}searchmenu`
+										},
+										{
+											"title": "chiku support 🌐",
+										"description": "Displays The support link of chiku",
+										"rowId": `${prefix}developer`
+										}
+								]
+							},
+							{
+								"title": "about chiku bot 🌝",
+								"rows": [
+									{
+										"title": "chiku bot developer",
+										"description": "Displays The Chiku-MD developer",
+										"rowId": `${prefix}developer`
+									}
+								]
+							},
+							{
+								"title": "Credit ©️",
+								"rows": [
+									{
+										"title": "Thanks To ❤️",
+										"description": "Displays The List Of Credit Of The Bot !!",
+										"rowId": `${prefix}tqtt`
+									}
+								]
+							}
+						]
+const listMessage = {
+  text: "*Please choose the menu*",
+  footer: `this is a beta program`,
+  title: `${ucapanWaktu}.. ${pushname}
+🎀 *Bot prefix *  : (.)
+🎀*Bot user name* : ${pushname}
+🎀 *Bot speed*  : ${latensie.toFixed(4)} ms
+🎀 *Bot runtime* : ${runtime(process.uptime())}
+🎀*Owner name* : ${global.OwnerName}
+🎀*Owner num.* : http://wa.me//${global.OwnerNumber}
 
-case 'help': case 'h': case 'menu': case 'allmenu': case 'listmenu':{
+      ♤《《╼━╼━━━━━━━━━━━》》♤`,
+  buttonText: "chiku",
+  sections
+}
+const sendMsg = await Miku.sendMessage(m.chat, listMessage)
+}
+break
+
+case 'searchmenu':{
+	    if (isBan) return reply(mess.banned)	 			
+    if (isBanChat) return reply(mess.bangc)
+      
+ const searchkamenu =`*━━━〈  🔍 Search 🔍  〉━━━*
+
+♠️chiku
+♠️yts
+♠️lyrics
+♠️google
+♠️gimage
+♠️pinterest
+♠️image
+♠️movie
+♠️wallpaper
+♠️searchgc
+♠️happymod
+♠️wikimedia
+♠️ringtone
+♠️anime
+♠️animestory
+♠️manga
+♠️ringtone`
+
+
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Bot Owner🧞‍♂️'}, type: 1},
+
+    {buttonId: `.nsfw on`, buttonText: {displayText: 'NSFW💦'}, type: 1}
+    ]
+                let searchmenubutton = {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption: searchkamenu,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, searchmenubutton,{ quoted:m })
+                }
+break
+ 
+ case 'coremenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const corekamenu=`*━━━〈  🎆 Core 🎆 〉━━
+ 
+⚡speak
+⚡️profile
+⚡️help
+⚡️delete
+⚡️deleteall
+⚡️listgc
+⚡️listpc
+⚡️welcome
+⚡️support`
+
+
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.ownermenu`, buttonText: {displayText: 'ownermenu'}, type: 1}
+    ]
+                let coremenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:corekamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, coremenubutton,{ quoted:m })
+                }
+break
+ 
+
+case 'menu':{
+    if (isBan) return reply(mess.banned)	 			
+    if (isBanChat) return reply(mess.bangc)
+      
+ const helpmenu =`${ucapanWaktu}..*${pushname}*,
+
+I am *chiku*, created by Ayush pandey
+
+⚒  this is a beta version so many features are not work ⚒ 
+
+
+ here's my Command 
+
+《.Coremenu》
+《.Ownermenu》
+《.Groupmenu》
+《.Antilinkmenu》
+《.Searchmenu》
+《.Convertmenu》
+《.Audiomenu》
+《.Reactmenu》
+《.Downloadmenu》
+《.Weebmenu》
+《.Informativemenu》
+《.Othersmenu》
+《.Funmenu》
+《.Essentialsmenu》
+《.Nsfwmenu》
+
+
+ 🔥*before use Command type.*
+`
+
+
+    let buttonshelpm = [
+
+    {buttonId: `allmenu`, buttonText: {displayText: 'allmenu'}, type: 1},
+
+    {buttonId: `.l`, buttonText: {displayText: 'List😈'}, type: 1},
+    
+        {buttonId: `.support`, buttonText: {displayText: 'support'}, type: 1}
+    ]
+                let buttonMessage = {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption: helpmenu,
+                    footer: `${BotName}`,
+                    buttons: buttonshelpm,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, buttonMessage,{ quoted:m })
+                }
+break
+ 
+
+case  'rating' : {
+    if (isBan) return reply(mess.banned)	 			
+        if (isBanChat) return reply(mess.bangc)
+    let sections = []
+    let  nexusmenu = [`rate`,`rate`,`rate`,`rate`,`rate`,`rate`,`rate`]
+    let marin2 = [`☆ `,`☆☆ `,`☆☆☆ `,`☆☆☆☆ `,`☆☆☆☆☆`,`☆☆☆☆☆☆`,`☆☆☆☆☆☆☆ `]
+    let ne = [` thik tha bot`,`accha laga bot`,`kdk bro `,`nice bro `,`like it`,`tera bhi sahi hai`,`Dil jit lia `]
+    let startnum = 0; let startnu = 0; let startn = 0;let start = 0
+                let startnumm = 1
+                for (let x of nexusmenu) {
+                    const yy = {title: `${marin2[startnum++]}`,
+                rows: [
+                   {
+                    title: `${marin2[startnu++]}`,
+                   // description: `${ne[0]}`,
+                    rowId: `${prefix}${x}`
+                  }
+                ]
+               }
+                    sections.push(yy)
+                }
+                const sendm =  Miku.sendMessage(
+  from, 
+  {
+   text: "shubhm: https://api.whatsapp.com/send/?phone=917798203711",
+   footer: `${BotName}`,
+   title: "CHECK THE ......",
+   title: `
+hey 🥵: ${pushname}
+please rate me 
+`,
+   buttonText: "Click Button",
+   sections
+  }, { quoted : m }
+)  
+}
+
+break
+case 'rate': case 'rate2':
+    
+    reply(`${pushname}thanks:\n\n for rating baby`)
+    break
+
+
+
+
+
+
+case '':
+    if(isCmd){
+    if (isBan) return reply(mess.banned)	 			
+    if (isBanChat) return reply(mess.bangc)
+
+      mikupic ='https://wallpapercave.com/wp/wp10524580.jpg'
+    
+        
+ const needhelpmenu = `╭━━━━━━━━━━━━━━━━┈─✧
+ ┴
+ │⬡${ucapanWaktu}..
+ │⬡Name :${pushname} 
+ │⬡My prefix is :${prefix}
+ │⬡Owner name : ${global.OwnerName}
+ │⬡Bot speed : ${latensie.toFixed(4)} ms 
+ │⬡Total Bot user : ${Object.keys(global.db.users).length} 
+ │⬡Platform : Linux 
+ │⬡ *Time*: ${xtime} 
+ ┬
+ ├━━━━━━━━━━━━━━━━┈─⋆
+ │ ▸Instagram: https://www.instagram.com/tabahi_boy_ayush/
+ ┴ ▸Owner: ayush 
+ ✧
+ ┬ 📌 𝗣𝗶𝗻𝗻𝗲𝗱 :
+ │ shubhm: https://api.whatsapp.com/send/?phone=917798203711
+ ╰━━━━━━━━━━━━━━━━┈─◂`
+     
+         let butRun = [
+                {buttonId: `.menu`, buttonText: {displayText: 'Help'}, type: 1},
+                {buttonId: `.rating`, buttonText: {displayText: 'rate me'}, type: 1}
+                ]
+                let buttonMessage = {
+             video:fs.readFileSync('./system/miku.mp4'),gifPlayback:true,
+                    caption: needhelpmenu,
+                    footer: `${global.BotName}`,
+                    buttons: butRun,
+                    headerType: 4
+                }
+            Miku.sendMessage(m.chat,buttonMessage,{quoted:m})
+                }
+break
+
+case 'thanksto' : case 'BUYBOT': case 'developer' : {
+    const tx = `╔═𓊈developer of chiku bot𓊉═╗\n╠𝐌𝐫.𝐚𝐲𝐮𝐬𝐡: 𝐭𝐡𝐞 𝐦𝐚𝐢𝐧 𝐝𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫\n╠𝐂𝐎𝐍𝐓𝐀𝐂𝐓 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍 \n╠  https://wa.me/+919006765023 \n╠𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌 :https://instagram.com/tabahi_boy_ayush \n ╠𝐆𝐈𝐓𝐇𝐔𝐁 :https://github.com/Ayush-pandey-u\n ╔═╾ 𝟐𝐧𝐝 𝐃𝐄𝐕𝐄𝐋𝐎𝐏𝐄𝐑 ╼═╗\n╠𝐌𝐫.shubham: \n╠𝐂𝐎𝐍𝐓𝐀𝐂𝐓 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍 :\n╠ https://wa.me/+917798203711\n╠𝐆𝐈𝐓𝐇𝐔𝐁:\n╠ https://github.com/ \n♤《《╼━╼━━━━━━━━━━━》》♤ `
+    const Nexusarra= [
+                "https://i.pinimg.com/564x/97/a4/c2/97a4c2ffdcbe8a8ade3fcc10cf9dae0c.jpg",
+            "https://i.pinimg.com/564x/1b/73/36/1b73360d4088aa715aaea5d0ee2e6a07.jpg",
+            "https://i.pinimg.com/564x/4d/4a/4f/4d4a4f1ef8551cded26ea1d296dc3003.jpg",
+                ]
+            
+                const Nexusselectio = Nexusarra[Math.floor(Math.random()*Nexusarra.length)]
+            
+                Miku.sendMessage(from,{video:{url:Nexusselectio},gifPlayback:true,caption:tx},{quoted:m})
+    }
+    
+    break
+
+
+
+
+
+
+
+ case 'allmenu':{
     if (isBan) return reply(mess.banned)	 			
     if (isBanChat) return reply(mess.bangc)
       
@@ -4803,15 +5245,6 @@ I am *chiku*, a bot  deploy by 🦋⃟≛⃝𝐀𝐘𝐔𝐒𝐇⃟≛⃝
 
    ♤《《╼━╼━━━━━━━━━━━》》♤
    
-🎀 *Bot prefix *  : (.)
-🎀*Bot user name* : ${pushname}
-🎀 *Bot speed*  : ${latensie.toFixed(4)} ms
-🎀 *Bot runtime* : ${runtime(process.uptime())}
-🎀*Owner name* : ${global.OwnerName}
-🎀*Owner num.* : http://wa.me//${global.OwnerNumber}
-
-      ♤《《╼━╼━━━━━━━━━━━》》♤
-
  *━━━〈  🎆 Core 🎆 〉━━
  
 ⚡speak
@@ -5040,9 +5473,9 @@ I am *chiku*, a bot  deploy by 🦋⃟≛⃝𝐀𝐘𝐔𝐒𝐇⃟≛⃝
 
     let buttonshelpm = [
 
-    {buttonId: `.owner`, buttonText: {displayText: 'Bot Owner🧞‍♂️'}, type: 1},
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner🧞‍♂️'}, type: 1},
 
-    {buttonId: `.nsfw on`, buttonText: {displayText: 'NSFW💦'}, type: 1}
+    {buttonId: `.listmenu`, buttonText: {displayText: 'listmenu'}, type: 1}
     ]
                 let buttonMessage = {
                     video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
@@ -5055,33 +5488,439 @@ I am *chiku*, a bot  deploy by 🦋⃟≛⃝𝐀𝐘𝐔𝐒𝐇⃟≛⃝
             Miku.sendMessage(m.chat, buttonMessage,{ quoted:m })
                 }
 break
- 
-
-case '':
-    if(isCmd){
+case 'ownermenu':{
     if (isBan) return reply(mess.banned)	 			
     if (isBanChat) return reply(mess.bangc)
+      
+ const ownerkamenu=`*━━━〈  🎀 Owner 🎀 〉━━━*
+ 
+🔮self
+🔮public
+🔮ban
+🔮bangroup
+🔮bye
+🔮join
+🔮bye
+🔮block
+🔮unblock
+🔮broadcast
+`
 
-      mikupic ='https://wallpapercave.com/wp/wp10524580.jpg'
-    
-        
- const needhelpmenu = `Did you mean *${prefix}help*.`
-     
-         let butRun = [
-                {buttonId: `.help`, buttonText: {displayText: 'Help'}, type: 1}
-                ]
-                let buttonMessage = {
-                    video:fs.readFileSync('./system/miku.mp4'),gifPlayback:true,
-                    caption: needhelpmenu,
-                    footer: `${global.BotName}`,
-                    buttons: butRun,
+
+    let okeoke= [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let ownermenubutton = {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption: ownerkamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
                     headerType: 4
+                    
                 }
-            Miku.sendMessage(m.chat,buttonMessage,{quoted:m})
+            Miku.sendMessage(m.chat, ownermenubutton,{ quoted:m })
                 }
 break
 
+case 'alive':{
+    if (isBan) return reply(mess.banned)	 			
+    if (isBanChat) return reply(mess.bangc)
+      
+ const alivekamenu=`* hii baby im alive 
+🎀 *Bot speed*  : ${latensie.toFixed(4)} ms
+`
 
+
+    let okeoke= [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.groupmenu`, buttonText: {displayText: 'groupmenu'}, type: 1}
+    ]
+                let alivebutton = {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption: alivekamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, alivebutton,{ quoted:m })
+                }
+break
+
+case 'groupmenu':{
+    if (isBan) return reply(mess.banned)	 			
+    if (isBanChat) return reply(mess.bangc)
+      
+ const groupkamenu=`*━━━〈  ⭕ Group ⭕  〉━━━*
+ 
+🎈promote
+🎈demote
+🎈revoke
+🎈add
+🎈remove
+🎈tagall
+🎈hidetag
+🎈groupsetting
+🎈grouplink
+🎈setgcpp
+🎈setname
+🎈setdesc
+🎈group
+🎈nsfw
+`
+
+
+    let okeoke= [
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1},
+
+    {buttonId: `.nsfw on`, buttonText: {displayText: 'NSFW💦'}, type: 1}
+    ]
+                let groupmenubutton = {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption: groupkamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat,groupmenubutton,{ quoted:m })
+                }
+break
+case 'funmenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const  funkamenu=`*━━━〈  🎐 Fun 🎐 〉━━━*
+🚀reaction
+🚀truth
+🚀dare
+🚀couple
+🚀soulmate
+🚀handsomecheck
+🚀beautifulcheck
+🚀awesomecheck
+🚀greatcheck
+🚀gaycheck
+🚀cutecheck
+🚀lesbiancheck
+🚀hornycheck
+🚀prettycheck
+🚀lovelycheck
+🚀uglycheck
+🚀charactercheck
+`
+
+
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let funmenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:funkamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, funmenubutton,{ quoted:m })
+                }
+break
+
+case 'Essentialsmenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const  Essentialskamenu=`*━━━〈  🪁 Essentials 🪁  〉━━━*
+
+🧨say
+🧨translate
+🧨fliptext
+🧨toletter
+`
+
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let Essentialsmenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:Essentialskamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, Essentialsmenubutton,{ quoted:m })
+                }
+break
+
+case 'convertmenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const convertkamenu=`*━━━〈  🔰 Convert 🔰  〉━━━*
+
+🏮sticker
+🏮toimg
+🏮tovideo
+🏮togif 
+🏮steal
+🏮stickermeme
+🏮emojimix
+🏮tourl
+🏮tomp3
+🏮toaudio` 
+       let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let convertmenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:convertkamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, convertmenubutton,{ quoted:m })
+                }
+break
+
+case 'downloadmenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const  downloadkamenu=`*━━━〈  🌌 Downloader 🌌  〉━━━*
+
+🎗play
+🎗ytmp3
+🎗ytmp4
+🎗ytvideo
+🎗mediafire
+🎗instagram
+🎗igtv
+🎗facebook
+🎗fbmp3
+🎗twitter
+🎗twittermp3
+🎗tiktok
+🎗tiktokaudio
+🎗tiktoknowm
+🎗mediafire`
+
+
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let downloadmenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:downloadkamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, downloadmenubutton,{ quoted:m })
+                }
+break
+
+case 'Informativemenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const  Informativekamenu=`*━━━〈  ♨️ Informative ♨️  〉━━━*
+
+📝animequote
+📝quote
+📝covid
+📝earthquake
+📝wiki
+`
+
+
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let Informativemenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:Informativekamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, Informativemenubutton,{ quoted:m })
+                }
+break
+case 'audiomenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const audiokamenu=`*━━━〈  🔉 Audio 🔉  〉━━━*
+
+📎bass
+📎tempo
+📎blown
+📎deep
+📎earrape
+📎fast
+📎fat
+📎nightcore
+📎reverse
+📎robot
+📎slow
+📎squirrel`
+
+
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let audiomenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:audiokamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, audiomenubutton,{ quoted:m })
+                }
+break
+
+case 'Othermenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const  Otherkamenu=`*━━━〈  🎗 Others 🎗  〉━━━*
+
+🔖stickermeme
+🔖quotes
+🔖darkjoke 
+`
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let Othermenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:Otherkamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, Othermenubutton,{ quoted:m })
+                }
+break
+
+case 'Weebmenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const  Weebkamenu=`*━━━〈  🈴 Weeb 🈴  〉━━━*
+
+🧧crosplay
+🧧waifu
+🧧loli
+🧧neko
+🧧ppcouple
+🧧feed
+🧧foxgirl
+🧧feed
+🧧meow
+🧧tickle
+🧧wallpaper
+🧧coffee
+🧧animenom
+🧧waifu3
+🧧neko2
+🧧feed
+🧧meow
+🧧tickle
+🧧migumin
+🧧awoo
+🧧animewallpaper2
+🧧anime
+🧧manga
+`
+
+
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let Weebmenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:Weebkamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, Weebmenubutton,{ quoted:m })
+                }
+break
+
+case 'antilinkmenu':{
+ 	if (isBan) return reply(mess.banned)	 
+ if (isBanChat) return reply(mess.bangc)
+      
+ const antilinkkamenu=`*━━━〈  ➰ Anti Link ➰  〉━━━*
+ 
+🎃antilinkgc
+🎃antilinktg
+🎃antilinktt
+🎃antilinkytch
+🎃antilinkytvid
+🎃antilinkig
+🎃antilinkfb
+🎃antilinktwit
+🎃antilinkall
+🎃antiwame`
+
+    let okeoke = [
+
+    {buttonId: `.owner`, buttonText: {displayText: 'Owner'}, type: 1},
+
+    {buttonId: `.listmenu`, buttonText: {displayText: 'back'}, type: 1}
+    ]
+                let antilinkmenubutton= {
+                    video:fs.readFileSync('./system/miku2.mp4'),gifPlayback:true,
+                    caption:antilinkkamenu ,
+                    footer: `${BotName}`,
+                    buttons: okeoke,
+                    headerType: 4
+                    
+                }
+            Miku.sendMessage(m.chat, antilinkmenubutton,{ quoted:m })
+                }
+break
 
 case 'chiku':
     if (isBan) return reply(mess.banned)	 			
@@ -5130,21 +5969,14 @@ const mikuarray= [
 
 break
 
-case 'add':{     			
-    if (!m.isGroup) return replay(mess.grouponly)
- if (!isBotAdmins) return replay(mess.botadmin)
- let users = m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
- if (users.length == 0) return replay(`Please write the number of the person you want to add to thhis group`)
-  await Miku.groupParticipantsUpdate(m.chat, [users], 'add').then((res) => replay(`User Added Successfully!`)).catch((err) => replay(`Cannot add that user to this group!`))
- }
- break
+
 
 
  case "tts":  case "texttospeech":  case "say": case "speak":{
     if (isBan) return reply(mess.banned)	 			
     if (isBanChat) return reply(mess.bangc)
 
-    if (!args[0]) return reply("Please give me a text so that i can speak it!")
+    if (!args[0]) return reply("Please give me a text so that i can speak it! for exam .speak ayush")
       
       let texttosay = text
         ? text
@@ -5178,9 +6010,66 @@ case 'add':{
                         return('Error!')
                     })
     break
+    case 'tqtt': 
+	   if (isBan) return reply(mess.ban)
+	if (isBanChat) return reply(mess.banChat)
+reply(`Thanks to
+*Ayush pandey*
+shubham
+Xeon 
+Fantox 
+And all friends who helped assemble this sexy script !!!`)
+break
+case 'ping': case 'p': case 'botstatus': case 'statusbot': {
+            	if (isBan) return reply(mess.ban)
+	if (isBanChat) return reply(mess.banChat)
+                const used = process.memoryUsage()
+                const cpus = os.cpus().map(cpu => {
+                    cpu.total = Object.keys(cpu.times).reduce((last, type) => last + cpu.times[type], 0)
+			        return cpu
+                })
+                const cpu = cpus.reduce((last, cpu, _, { length }) => {
+                    last.total += cpu.total
+                    last.speed += cpu.speed / length
+                    last.times.user += cpu.times.user
+                    last.times.nice += cpu.times.nice
+                    last.times.sys += cpu.times.sys
+                    last.times.idle += cpu.times.idle
+                    last.times.irq += cpu.times.irq
+                    return last
+                }, {
+                    speed: 0,
+                    total: 0,
+                    times: {
+			            user: 0,
+			            nice: 0,
+			            sys: 0,
+			            idle: 0,
+			            irq: 0
+                }
+                })
+                let timestamp = speed()
+                let latensi = speed() - timestamp
+                neww = performance.now()
+                oldd = performance.now()
+                respon = `
+Response Speed ${latensi.toFixed(4)} _Second_ \n ${oldd - neww} _miliseconds_\n\nRuntime : ${runtime(process.uptime())}
 
+💻 Info Server
+RAM: ${formatp(os.totalmem() - os.freemem())} / ${formatp(os.totalmem())}
 
+_NodeJS Memory Usaage_
+${Object.keys(used).map((key, _, arr) => `${key.padEnd(Math.max(...arr.map(v=>v.length)),' ')}: ${formatp(used[key])}`).join('\n')}
 
+${cpus[0] ? `_Total CPU Usage_
+${cpus[0].model.trim()} (${cpu.speed} MHZ)\n${Object.keys(cpu.times).map(type => `- *${(type + '*').padEnd(6)}: ${(100 * cpu.times[type] / cpu.total).toFixed(2)}%`).join('\n')}
+_CPU Core(s) Usage (${cpus.length} Core CPU)_
+${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Object.keys(cpu.times).map(type => `- *${(type + '*').padEnd(6)}: ${(100 * cpu.times[type] / cpu.total).toFixed(2)}%`).join('\n')}`).join('\n\n')}` : ''}
+                `.trim()
+                reply(respon)
+            }
+            break
+            
 default:
 
     if(isCmd){
