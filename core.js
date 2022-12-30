@@ -6139,4 +6139,4 @@ fs.unwatchFile(file)
 console.log(chalk.redBright(`Update ${__filename}`))
 delete require.cache[file]
 require(file)
-})
+}) 
